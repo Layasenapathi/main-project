@@ -1,59 +1,85 @@
 import { useState } from "react"
+import { useNavigate } from 'react-router-dom';
 
 const Login = () => {
-    const [email, setEmail] = useState('')
-    const [password,setPassword] = useState('')
+    const [username, setName] = useState('')
+    const [password, setPassword] = useState('')
 
-    const [errors,setErrors] = useState({
+    const [errors, setErrors] = useState({
         email: "",
-        password:""
- } )
+        password: ""
+    })
+    const navigate = useNavigate();
 
     function onSubmit() {
-        if (email.trim() === "") {
-            setErrors( (errors) => ({...errors,email:"Enter E-mail Address"}))
+        if (username.trim() === "") {
+            setErrors((errors) => ({ ...errors, username: "Enter valid username" }))
 
         }
         else {
-            setErrors((errors) => ({...errors,email:""}))
+            setErrors((errors) => ({ ...errors, username: "" }))
         }
         if (password.trim() === "") {
-            setErrors( (errors) => (
-                {...errors,password:"Enter your valid password"}
+            setErrors((errors) => (
+                { ...errors, password: "Enter your valid password" }
             ))
         }
 
         else {
-            setErrors((errors) =>({...errors,password:""}))
+            setErrors((errors) => ({ ...errors, password: "" }))
         }
 
-       
+        navigate('/Home')
+
 
     }
+    const onSubmitSucessApi = () => {
+        navigate("/")
+    }
+    const submitForm = async (e) => {
+        e.preventDefault()
+        const url = "https://apis.ccbp.in/login"
+        const options = {
+            method:"POST",
+            body:JSON.stringify({
+                username:username,
+                password:password
+            })
+        }
+        const response = await fetch(url,options)
+        const data = await response.json()
+        console.log(data)
+        console.log(response)
+        if (response.ok === true) {
+            onSubmitSucessApi()
+        }
+
+    }
+
     return (
 
 
-        < div className = "conatiner" >
-            <div className="sub-container">
+        < div className="conatiner" >
+            <form onSubmit={submitForm} className="sub-container">
                 <h1 className="heading"> LOGIN FORM</h1>
 
                 <div className="email-container">
 
-                    <label for="email">Email</label>
-                    <input type="email" id="email" className="emailinput" placeholder="Enter E-mail"  value={email} 
-                    onChange={(e) => {
-                        setEmail(e.target.value)
-                    }}/>
+                    <label for="name">User Name</label>
+                    <input type="text" id="name" className="emailinput" placeholder="Enter Name" value={username}
+                        onChange={(e) => {
+                            setName(e.target.value)
+                        }} />
 
-                    {errors.email && <span className="text-danger">{errors.email}</span> }
+                    {errors.username && <span className="text-danger">{errors.username}</span>}
                 </div>
 
                 <div className="email-container">
                     <label for="password">Password</label>
-                    <input type="password" id="password" className="emailinput" placeholder="Enter Password"  value={password}
-                    onChange={(e) => {
-                        setPassword(e.target.value)
-                    }}/>
+                    <input type="password" id="password" className="emailinput" placeholder="Enter Password" value={password}
+                        onChange={(e) => {
+                            setPassword(e.target.value)
+                        }} />
 
                     {errors.password && <span className="text-danger">{errors.password}</span>}
                 </div>
@@ -61,7 +87,7 @@ const Login = () => {
                 <button className="button" onClick={onSubmit}>Login</button>
 
 
-            </div>
+            </form>
 
         </div >
     )
