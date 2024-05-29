@@ -1,6 +1,5 @@
 import { useState } from "react"
 import { useNavigate } from 'react-router-dom';
-
 const Login = () => {
     const [username, setName] = useState('')
     const [password, setPassword] = useState('')
@@ -29,12 +28,9 @@ const Login = () => {
             setErrors((errors) => ({ ...errors, password: "" }))
         }
 
-        navigate('/Home')
-
-
     }
     const onSubmitSucessApi = () => {
-        navigate("/")
+        navigate("/home")
     }
     const submitForm = async (e) => {
         e.preventDefault()
@@ -52,6 +48,8 @@ const Login = () => {
         console.log(response)
         if (response.ok === true) {
             onSubmitSucessApi()
+        }else{
+            console.log("Please enter valid details")
         }
 
     }
